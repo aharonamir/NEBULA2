@@ -8,7 +8,7 @@ from logging import Logger
 
 from .DepthAnnotator import DepthAnnotator
 from .DepthAPIUtility import DepthAPIUtility
-from .stepwrapper import STEPDetector
+from .depthmodel import STEPDetector
 
 # import from common
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -35,9 +35,9 @@ SCHEDULER = 'Scheduler'
 class DepthsManager(ExpertManager):
 
     def initialize(self):
-        self.api = DepthsAPIUtility()
+        self.api = DepthAPIUtility()
         self.cur_task = None
-        self.step_model = STEPDetector()
+        self.depth_model = ()
 
     def get_pipeline(self) -> ExpertPipeline:
         detector_step = DetectorStep(DEPTH_DETECTOR)

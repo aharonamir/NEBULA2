@@ -55,4 +55,4 @@ class DepthAPIUtility(RemoteAPIUtility):
             movies = self.nre.wait_for_change("Depth", "ClipScene") 
             for movie in movies:
                 yield movie
-            self.nre.update_expert_status("Actions") #Update scheduler, set it to done status
+            self.nre.update_expert_status("Depth") #Update scheduler, set it to done status
