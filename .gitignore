@@ -138,3 +138,4 @@ ve/
 
 # IDE
 .vscode/
+.devcontainer/
