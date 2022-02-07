@@ -304,6 +304,8 @@ dependencies:
     - numba==0.55.0
     - numpy==1.20.3
     - optional-django==0.1.0
+    - opencv-contrib-python==4.5.5.62
+    - opencv-python==4.5.5.62
     - pandasgui==0.2.13
     - pandocfilters==1.5.0
     - parso==0.8.3
@@ -347,6 +349,7 @@ dependencies:
     - tabulate==0.8.9
     - terminado==0.12.1
     - thinc==8.0.13
+    - timm==0.5.4
     - toml==0.10.2
     - tomli==1.2.2
     - transformers==4.12.5
