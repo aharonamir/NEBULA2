@@ -1,19 +1,9 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/python-3-anaconda
 {
 	"name": "Nebula Dev",
-	// "build": { 
-	// 	"context": "..",
-	// 	"dockerfile": "Dockerfile",
-	// 	"args": {
-	// 		"NODE_VERSION": "lts/*"
-	// 	}
-	// },
-	// to load pre-configured image
-	"image": "aharonamir/dev-python-nebula2:conda-0.3",
-
-	// Set *default* container specific settings.json values on container create.
-	"settings": { 
+	"context": ".",
+	"dockerFile": "./Dockerfile",
+	// "image": "aharonamir/dev-python-nebula2:conda-0.3",
+	"settings": {
 		"python.defaultInterpreterPath": "/opt/conda/bin/python",
 		"python.linting.enabled": true,
 		"python.linting.pylintEnabled": true,
@@ -24,19 +14,12 @@
 		"python.linting.pydocstylePath": "/opt/conda/bin/pydocstyle",
 		"python.linting.pylintPath": "/opt/conda/bin/pylint"
 	},
-
-	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"ms-python.python",
 		"ms-python.vscode-pylance"
 	],
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "python --version",
-
-	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode"
+	// This was added!
+	"runArgs": [
+		"--gpus=all"
+	]
 }
