@@ -14,10 +14,22 @@
 		"python.linting.pydocstylePath": "/opt/conda/bin/pydocstyle",
 		"python.linting.pylintPath": "/opt/conda/bin/pylint"
 	},
+	// vs-code extensions to enable inside the dev container
 	"extensions": [
 		"ms-python.python",
-		"ms-python.vscode-pylance"
+		"ms-python.vscode-pylance",
+		"ms-toolsai.jupyter-renderers",
+		"ms-toolsai.jupyter",
+		"ms-toolsai.jupyter-keymap"
 	],
+	// mount other folders
+	"mounts": [
+		"source=${localEnv:HOME}/data,target=/workspaces/data,type=bind,consistency=cached"
+	],
+	"containerEnv": {
+		"AWS_ACCESS_KEY_ID": "AKIA6CGKI2WGU75H3SPB",
+		"AWS_SECRET_ACCESS_KEY": "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"
+	},
 	// This was added!
 	"runArgs": [
 		"--gpus=all"

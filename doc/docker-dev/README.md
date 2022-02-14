@@ -12,3 +12,10 @@ Before starting: make sure you have the remote-ssh and remote-containers extensi
 ## Notes:
 - in .gitignore add .devcontainer to avoid commiting this folder (as well as .vscode)
 - the conda running env is base
+- If you need to add mounts(volumes) to the dev container use the 'mounts' in devcontainer.json:
+	"mounts": [
+		"source=${localEnv:HOME}/data,target=/workspaces/data,type=bind,consistency=cached"
+	],
+  then F1 >> 'Remote-Containers: rebuild containers'
+
+
