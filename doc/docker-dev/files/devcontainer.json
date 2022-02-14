@@ -27,8 +27,8 @@
 		"source=${localEnv:HOME}/data,target=/workspaces/data,type=bind,consistency=cached"
 	],
 	"containerEnv": {
-		"AWS_ACCESS_KEY_ID": "AKIA6CGKI2WGU75H3SPB",
-		"AWS_SECRET_ACCESS_KEY": "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"
+		"AWS_ACCESS_KEY_ID": "${localEnv:AWS_ACCESS_KEY_ID}",
+		"AWS_SECRET_ACCESS_KEY": "${localEnv:AWS_SECRET_ACCESS_KEY}"
 	},
 	// This was added!
 	"runArgs": [
