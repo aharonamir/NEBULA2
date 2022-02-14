@@ -10,6 +10,8 @@ Before starting: make sure you have the remote-ssh and remote-containers extensi
   F1 >> Python: select interpreter - choose the one that point to ('base) conda
 - if you need to add more packages, just add them to environment.yml and choose F1 >> 'Remote-Containers: rebuild containers'
 ## Notes:
+- aws access id/keys since i cannot put the credentials on a public git repo (security hazard), they must be passed as env variables
+  (see .devcontainer.json ) so you must make them available in your bashrc as AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 - in .gitignore add .devcontainer to avoid commiting this folder (as well as .vscode)
 - the conda running env is base
 - If you need to add mounts(volumes) to the dev container use the 'mounts' in devcontainer.json:
