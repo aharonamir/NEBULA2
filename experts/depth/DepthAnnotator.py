@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from common.BaseAnnotator import BaseAnnotator
 
 
-class ActionAnnotator(BaseAnnotator):
+class DepthAnnotator(BaseAnnotator):
     def annotate_video(self, video_path, annotations, output_path, video_fps=25, show_pbar=True):
         # change annotations mapping format for easier frames iteration.
         # change to frame --> obj --> box format.
@@ -44,7 +44,7 @@ class ActionAnnotator(BaseAnnotator):
 
         # iterate all detections
         for item_id, item_data in detections.items():
-            
+
             # get detection info
             box = item_data['box']
             score = item_data['score']

@@ -8,7 +8,7 @@ from logging import Logger
 
 from .DepthAnnotator import DepthAnnotator
 from .DepthAPIUtility import DepthAPIUtility
-from .depthmodel import STEPDetector
+from .models import DepthModel
 
 # import from common
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -16,7 +16,7 @@ from common.ExpertManager import (ExpertManager, ExpertPipeline, ExpertPipelineS
                                   AggQueue, OUTPUT_STYLE_ANNO, OUTPUT_STYLE_ARANGO, OUTPUT_STYLE_JSON)
 from common.video_util import VideoInfo
 
-# 
+#
 DEPTH_CONFIDENCE_THRESHOLD = 0.4
 IOU_THRESHOLD_FOR_DUPLICATES = 0.8
 DEFAULT_FPS_FOR_FRAME_FOLDER = 25
@@ -37,7 +37,7 @@ class DepthsManager(ExpertManager):
     def initialize(self):
         self.api = DepthAPIUtility()
         self.cur_task = None
-        self.depth_model = ()
+        self.depth_model = DepthModel()
 
     def get_pipeline(self) -> ExpertPipeline:
         detector_step = DetectorStep(DEPTH_DETECTOR)
@@ -131,51 +131,54 @@ class DetectorStep(ExpertPipelineStep):
                     continue
 
             self.logger.info(f'starting depth detection: {video_path}')
+            # start getting all the info about the movie from db
+            # and analyze which frames to take and bboxes
 
             logger = self.logger
-            class LoggingList:
-                def __init__(self):
-                    self.lst = []
-                    self.count = 0
+            # class LoggingList:
+            #     def __init__(self):
+            #         self.lst = []
+            #         self.count = 0
 
-                def append(self, item):
-                    logger.info(f'{video_path}: got depths for frame {self.count + 1}/{msg[NUM_FRAMES]}')
-                    self.count += 1
-                    self.lst.append(item)
+            #     def append(self, item):
+            #         logger.info(f'{video_path}: got depths for frame {self.count + 1}/{msg[NUM_FRAMES]}')
+            #         self.count += 1
+            #         self.lst.append(item)
 
-                def extend(self, items):
-                    for item in items:
-                        self.append(item)
+            #     def extend(self, items):
+            #         for item in items:
+            #             self.append(item)
 
-                def __len__(self):
-                    return len(self.lst)
-                
-                def __iter__(self):
-                    return iter(self.lst)
+            #     def __len__(self):
+            #         return len(self.lst)
 
-            try:
-                # do predictions
-                preds = self.mgr.step_model.predict_video(video_path,
-                                                          source_fps=msg[FPS_KEY],
-                                                          confidence_threshold=self.mgr.confidence_threshold.get(msg),
-                                                          global_iou_threshold=self.mgr.global_iou_threshold.get(msg),
-                                                          show_pbar=False,
-                                                          global_aggregator=LoggingList())
-            except:
-                self.logger.exception(f'An error occurred during depth detection on {video_path}')
-                preds = None
-            else:
-                self.logger.info(f'depth detection completed: {video_path}')
+            #     def __iter__(self):
+            #         return iter(self.lst)
 
-            if preds is not None:
-                preds = {str(i): p for i, p in enumerate(preds)}
-                output_path = None if not self.mgr.output_dir.get(msg) else os.path.join(
-                    self.mgr.output_dir.get(msg),
-                    os.path.splitext(os.path.basename(video_path))[0] + "__anno_depth_detection"
-                )
-                self.__save_predictions(msg, preds, self.mgr.output_style.get(msg), output_path)
+            # try:
+            #     # do predictions
+            #     preds = self.mgr.step_model.predict_video(video_path,
+            #                                               source_fps=msg[FPS_KEY],
+            #                                               confidence_threshold=self.mgr.confidence_threshold.get(msg),
+            #                                               global_iou_threshold=self.mgr.global_iou_threshold.get(msg),
+            #                                               show_pbar=False,
+            #                                               global_aggregator=LoggingList())
+            # except:
+            #     self.logger.exception(f'An error occurred during depth detection on {video_path}')
+            #     preds = None
+            # else:
+            #     self.logger.info(f'depth detection completed: {video_path}')
 
-            self.cur_task = None
+            ## Now go over results and save in db
+            # if preds is not None:
+            #     preds = {str(i): p for i, p in enumerate(preds)}
+            #     output_path = None if not self.mgr.output_dir.get(msg) else os.path.join(
+            #         self.mgr.output_dir.get(msg),
+            #         os.path.splitext(os.path.basename(video_path))[0] + "__anno_depth_detection"
+            #     )
+            #     self.__save_predictions(msg, preds, self.mgr.output_style.get(msg), output_path)
+
+            # self.cur_task = None
 
             if self._exit_flag:
                 break
@@ -205,8 +208,8 @@ class DetectorStep(ExpertPipelineStep):
         if OUTPUT_STYLE_ARANGO in output_style:  # save as DB entry
             nodes_saved = self.api.save_depth_data_to_scene_graph(video_path, preds)
             self.logger.info(f'successfully saved {nodes_saved} DB entries for {video_path}')
-            
-        
+
+
 class ArangoStep(ExpertPipelineStep):
     def run(self, q_in: Queue, q_out: AggQueue):
         self.logger.info('Arango client ready')
