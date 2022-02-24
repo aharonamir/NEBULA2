@@ -5,10 +5,13 @@ sys.path.append("/workspaces/NEBULA2")
 print(sys.path)
 from nebula_api.nebula_enrichment_api import NRE_API
 from experts.common.RemoteAPIUtility import RemoteAPIUtility
-api = RemoteAPIUtility()
+from DepthAPIUtility import DepthAPIUtility
+api = DepthAPIUtility()
 nre = NRE_API()
 db = nre.db
 print(nre.db_host)
+
+api.initialize()
 
 from arango import ArangoClient
 client = ArangoClient(hosts='http://ec2-18-158-123-0.eu-central-1.compute.amazonaws.com:8529')
@@ -16,11 +19,19 @@ dbname = 'nebula_development'
 db_manual = client.db(dbname, username='nebula', password='nebula')
 print(db_manual)
 
+use_s3 = False
+
 arango_id = "Movies/92354428"
 movie_id = "f0a27202207444bd8bfb77708b0db3c5"
 
-num_frames = api.downloadDirectoryFroms3(arango_id)
-print(num_frames)
+if (use_s3):
+    num_frames = api.downloadDirectoryFroms3(arango_id)
+    print(num_frames)
+else:
+    out_path = f'/workspaces/data/{arango_id}/'
+    file_name = api.download_video_file(arango_id)
+    os.makedirs(out_path, exist_ok=True)
+    api.divide_movie_into_frames(file_name, out_path)
 
 movie_info = api.get_movie_info(arango_id)
 action_data = nre.get_all_expert_data("Actions", arango_id)
@@ -42,8 +53,6 @@ for data in cursor:
     nebula_movies.append(data)
 print(nebula_movies)
 movie = nebula_movies[0]
-
-
 
 # movie_nodes = []
 # query = f'FOR doc IN Nodes FILTER doc.movie_id == "{movie_id}" and doc.class == "Object" and not_null(doc.bboxes) RETURN doc'

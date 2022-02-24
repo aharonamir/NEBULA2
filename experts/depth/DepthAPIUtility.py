@@ -1,12 +1,45 @@
 import os
 import sys
+import cv2
+import urllib.request
 
 # import from common
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from common.RemoteAPIUtility import RemoteAPIUtility
-
+# from nebula_api.scene_detector_api import NEBULA_SCENE_DETECTOR
 
 class DepthAPIUtility(RemoteAPIUtility):
+    def initialize(self):
+        self.temp_file = "/tmp/depth_video.mp4"
+        # self.scene_detector = NEBULA_SCENE_DETECTOR()
+
+    def download_video_file(self, movie_id):
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
+        query = 'FOR doc IN Movies FILTER doc._id == "{}" RETURN doc'.format(movie_id)
+        cursor = self.db.aql.execute(query)
+        # url_prefix = "http://ec2-3-120-189-231.eu-central-1.compute.amazonaws.com:7000/"
+        url_prefix = "http://ec2-18-159-140-240.eu-central-1.compute.amazonaws.com:7000/"
+        url_link = ''
+        for doc in cursor:
+            url_link = url_prefix+doc['url_path']
+            url_link = url_link.replace(".avi", ".mp4")
+            print(url_link)
+            urllib.request.urlretrieve(url_link, self.temp_file)
+        return self.temp_file
+
+    def divide_movie_into_frames(self, movie_in_path, movie_out_folder):
+        cap = cv2.VideoCapture(movie_in_path)
+        ret, frame = cap.read()
+        num = 0
+        cv2.imwrite(os.path.join(movie_out_folder, f'frame{num:04}.jpg'), frame)
+        while cap.isOpened() and ret:
+            num = num + 1
+            ret, frame = cap.read()
+            if frame is not None:
+                cv2.imwrite(os.path.join(movie_out_folder,
+                           f'frame{num:04}.jpg'), frame)
+        return num
     # def create_action(self, arango_id, movie_id, frame_id, box, description, confidence, action_id):
     #     query = 'UPSERT { movie_id: @movie_id, arango_id: @arango_id, \
     #         action_id: @action_id}\
@@ -52,7 +85,7 @@ class DepthAPIUtility(RemoteAPIUtility):
         while True:
             # Signaling your code, that we have newly uploaded movie, frames are stored in S3.
             # Returns movie_id in form: Movie/<xxxxx>
-            movies = self.nre.wait_for_change("Depth", "ClipScene") 
+            movies = self.nre.wait_for_change("Depth", "ClipScene")
             for movie in movies:
                 yield movie
             self.nre.update_expert_status("Depth") #Update scheduler, set it to done status
