@@ -10,7 +10,8 @@ from common.ExpertManager import OUTPUT_STYLE_ANNO, OUTPUT_STYLE_ARANGO, OUTPUT_
 managers_dict = {
     # dirname: manager_namne (module + class)
     'tracker': 'TrackerManager',
-    'actions': 'ActionsManager'
+    'actions': 'ActionsManager',
+    'depth': 'DepthManager'
 }
 
 def parse_args():
@@ -65,14 +66,20 @@ def parse_args():
                         default=0.6,
                         type=float,
                         help='The model prediction confidence threshold (default is 0.6).')
-    
+
 
     # ===== actions args args =====
     # no extra arguments. this is here to add the "actions" option
     actions_parser = subparsers.add_parser("actions")
 
 
-
+    # ===== depth args args =====
+    depth_parser = subparsers.add_parser("depth")
+    depth_parser.add_argument('--model', '-m',
+                              default=None,
+                              help='Detection model configuration. Should be one of the CFG constants in the '
+                                 'chosen model backend. If not provided, a default configuration for the '
+                                 'backend is used.')
     # parse arguments
     parsed_args = parser.parse_args()
     parsed_args = __handle_args_defaults(parsed_args)
@@ -107,11 +114,11 @@ def __handle_args_defaults(parsed_args):
     # got local output save location. save as JSON
     elif not parsed_args.output_style:
         parsed_args.output_style = [OUTPUT_STYLE_JSON]
-    
+
     # method arango with output file is incompatible
     elif parsed_args.output_style == [OUTPUT_STYLE_ARANGO]:
         print('Warning: output style "arango" does not save locally and will not save output to given path: {parsed_args.output_dir}')
-    
+
     return parsed_args
 
 

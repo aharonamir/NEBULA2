@@ -32,7 +32,7 @@ NUM_FRAMES = 'num_frames'
 DEPTH_DETECTOR = 'Depths Detector'
 SCHEDULER = 'Scheduler'
 
-class DepthsManager(ExpertManager):
+class DepthManager(ExpertManager):
 
     def initialize(self):
         self.api = DepthAPIUtility()
@@ -40,12 +40,12 @@ class DepthsManager(ExpertManager):
         self.depth_model = DepthModel()
 
     def get_pipeline(self) -> ExpertPipeline:
-        detector_step = DetectorStep(DEPTH_DETECTOR)
+        depth_step = DepthStep(DEPTH_DETECTOR)
         if self.args.arango:
             arango_step = ArangoStep('Scheduler', is_daemon=True)
-            return ExpertPipeline([(arango_step, detector_step)])
+            return ExpertPipeline([(arango_step, depth_step)])
         else:
-            return ExpertPipeline([(detector_step, detector_step)])
+            return ExpertPipeline([(depth_step, depth_step)])
 
     @CLI_command
     def local(self, line):
@@ -110,7 +110,7 @@ class DepthsManager(ExpertManager):
             self._value = new_value_int
 
 
-class DetectorStep(ExpertPipelineStep):
+class DepthStep(ExpertPipelineStep):
     def run(self, q_in: Queue, q_out: AggQueue):
         self.mgr.print_n_log('detection thread ready for input')
 

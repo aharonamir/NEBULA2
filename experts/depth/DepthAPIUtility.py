@@ -12,6 +12,15 @@ class DepthAPIUtility(RemoteAPIUtility):
     def initialize(self):
         self.temp_file = "/tmp/depth_video.mp4"
         # self.scene_detector = NEBULA_SCENE_DETECTOR()
+    def get_movie_meta(self, movie_id):
+        nebula_movies={}
+
+        query = 'FOR doc IN Movies FILTER doc._id == "{}"  RETURN doc'.format(movie_id)
+
+        cursor = self.db.aql.execute(query)
+        for data in cursor:
+            nebula_movies[data['_id']] = data
+        return(nebula_movies)
 
     def download_video_file(self, movie_id):
         if os.path.exists(self.temp_file):
