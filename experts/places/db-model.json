@@ -1,0 +1,55 @@
+{
+    "arango_id": "Movies/92363404",
+    "places": [
+      [
+          { "2" : { "io": "outdoor", "cat": [{ "home_theater": 0.228, "grotto": 0.059 }], "attr": ["natural light", "open area", "no horizon"] } },
+          { "46" : { "io": "outdoor", "cat": [{ "home_theater": 0.228, "grotto": 0.059 }], "attr": ["natural light", "open area", "no horizon"] } },
+          { "90" : { "io": "outdoor", "cat": [{ "home_theater": 0.228, "grotto": 0.059 }], "attr": ["natural light", "open area", "no horizon"] } }
+      ],
+      [
+        94,
+        129,
+        164
+      ],
+      [
+        168,
+        187,
+        206
+      ],
+      [
+        210,
+        227,
+        244
+      ],
+      [
+        248,
+        299,
+        351
+      ],
+      [
+        355,
+        368,
+        381
+      ],
+      [
+        385,
+        401,
+        418
+      ],
+      [
+        422,
+        544,
+        666
+      ],
+      [
+        670,
+        748,
+        826
+      ],
+      [
+        830,
+        904,
+        979
+      ]
+    ]
+  }
