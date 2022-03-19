@@ -11,7 +11,8 @@ managers_dict = {
     # dirname: manager_namne (module + class)
     'tracker': 'TrackerManager',
     'actions': 'ActionsManager',
-    'depth': 'DepthManager'
+    'depth': 'DepthManager',
+    'places': 'PlacesManager'
 }
 
 def parse_args():

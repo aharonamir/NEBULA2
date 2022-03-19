@@ -19,13 +19,13 @@ dbname = 'nebula_development'
 db_manual = client.db(dbname, username='nebula', password='nebula')
 print(db_manual)
 
-use_s3 = False
+use_s3 = True
 
 arango_id = "Movies/92354428"
 movie_id = "f0a27202207444bd8bfb77708b0db3c5"
 
 if (use_s3):
-    num_frames = api.downloadDirectoryFroms3(arango_id)
+    num_frames = api.downloadFilesFroms3(arango_id, ['frame0000.jpg','frame0222.jpg','frame0193.jpg'])
     print(num_frames)
 else:
     out_path = f'/workspaces/data/{arango_id}/'

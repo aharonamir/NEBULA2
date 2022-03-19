@@ -24,6 +24,9 @@ class Places365Model(PlacesModel):
         self.params = list(self.model.parameters())
         self.weight_softmax = self.params[-2].data.numpy()
         self.weight_softmax[self.weight_softmax<0] = 0
+        self.scence_cat_num =  int(os.getenv('PLACES_SCENE_CATS', '5'))
+        self.scene_attrib_num =  int(os.getenv('PLACES_SCENE_ATTRS', '5'))
+
 
      # hacky way to deal with the Pytorch 1.0 update
     def recursion_change_bn(self, module):
@@ -151,3 +154,23 @@ class Places365Model(PlacesModel):
         probs, idx = h_x.sort(0, True)
         probs = probs.numpy()
         idx = idx.numpy()
+        ## Generate info for image:
+        # { "io": "outdoor", "cat": [{ "home_theater": 0.228, "grotto": 0.059 }], "attr": ["natural light", "open area", "no horizon"] }
+        frame_info = dict()
+        # io
+        io_image = np.mean(self.labels_IO[idx[:10]]) # vote for the indoor or outdoor
+        frame_info['io'] = 'indoor' if io_image < 0.5 else 'outdoor'
+        # cat
+        cats = []
+        for i in range(0, self.scence_cat_num):
+            cats.append({probs[i]: self.classes[idx[i]]})
+            # print('{:.3f} -> {}'.format(probs[i], self.classes[idx[i]]))
+        frame_info['cat'] = cats
+
+        # attributes
+        responses_attribute = self.W_attribute.dot(self.features_blobs[1])
+        idx_a = np.argsort(responses_attribute)
+        frame_info['attr'] = [self.labels_attribute[idx_a[i]] for i in range(-1,-10,-1)]
+        # print('--SCENE ATTRIBUTES:')
+        # print(', '.join([self.labels_attribute[idx_a[i]] for i in range(-1,-10,-1)]))
+        return frame_info
