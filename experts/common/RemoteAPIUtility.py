@@ -23,8 +23,9 @@ class RemoteAPIUtility:
         self.download_bucket_name = "nebula-frames"
         self.s3 = boto3.client('s3', region_name='eu-central-1')
         self.nre = NRE_API()
-        self.client = ArangoClient(hosts='http://ec2-18-158-123-0.eu-central-1.compute.amazonaws.com:8529')
-        self.db = self.client.db("nebula_development", username='nebula', password='nebula')
+        self.db = self.nre.db
+        # self.client = ArangoClient(hosts='http://ec2-18-158-123-0.eu-central-1.compute.amazonaws.com:8529')
+        # self.db = self.client.db("nebula_development", username='nebula', password='nebula')
 
     def get_movie_entity(self, entity_id):
         entity = None

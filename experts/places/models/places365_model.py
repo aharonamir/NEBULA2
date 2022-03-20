@@ -9,10 +9,12 @@ import numpy as np
 import cv2
 from .places_model import PlacesModel
 
+sys.path.append("/workspaces/NEBULA2")
 
 class Places365Model(PlacesModel):
 
     def __init__(self):
+        super().__init__()
         # load the labels
         self.classes, self.labels_IO, self.labels_attribute, self.W_attribute = self.load_labels()
         # load the model
@@ -163,7 +165,7 @@ class Places365Model(PlacesModel):
         # cat
         cats = []
         for i in range(0, self.scence_cat_num):
-            cats.append({probs[i]: self.classes[idx[i]]})
+            cats.append({probs[i].item(): self.classes[idx[i]]})
             # print('{:.3f} -> {}'.format(probs[i], self.classes[idx[i]]))
         frame_info['cat'] = cats
 

@@ -81,6 +81,13 @@ def parse_args():
                               help='Detection model configuration. Should be one of the CFG constants in the '
                                  'chosen model backend. If not provided, a default configuration for the '
                                  'backend is used.')
+    # ===== places args args =====
+    places_parser = subparsers.add_parser("places")
+    places_parser.add_argument('--model', '-m',
+                              default='places365',
+                              help='Detection model configuration. Should be one of the CFG constants in the '
+                                 'chosen model backend. If not provided, a default configuration for the '
+                                 'backend is used.')
     # parse arguments
     parsed_args = parser.parse_args()
     parsed_args = __handle_args_defaults(parsed_args)

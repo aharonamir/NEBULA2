@@ -7,6 +7,7 @@ import torch
 class PlacesModel(torch.nn.Module):
     def __init__(self):
         super().__init__()
+        # super(PlacesModel, self).__init__()
 
     @abstractmethod
     def forward(self, image, metadata=None):
